@@ -41,5 +41,34 @@ CHIP ALU {
         ng;      // if (out < 0)  equals 1, else 0
 
     PARTS:
-    //// Replace this comment with your code.
+    Not16(in=x, out=notx);
+    Not16(in=y, out=noty);
+
+// ZX and ZY flags handling
+    Mux16(a=x, b=false, sel=zx, out=zxout);
+    Mux16(a=y, b=false, sel=zy, out=zyout);
+
+// NX and NY flag handling
+    Not16(in=zxout, out=notzxout);
+    Not16(in=zyout, out=notzyout);
+
+    Mux16(a=zxout, b=notzxout, sel=nx, out=readyx);
+    Mux16(a=zyout, b=notzyout, sel=ny, out=readyy);
+
+// f control bit handling
+    And16(a=readyx, b=readyy, out=xandy);
+    Add16(a=readyx, b=readyy, out=xaddy);
+    
+    Mux16(a=xandy, b=xaddy, sel=f, out=readyout);
+    
+// NO flag handling, out, ng flag
+    Not16(in=readyout, out=notreadyout);
+    
+    Mux16(a=readyout, b=notreadyout, sel=no, out=out, out[15]=ng, out[0..7]=zrLow, out[8..15]=zrHigh);
+    
+// ZR flag handling
+    Or8Way(in=zrLow, out=zr1);
+    Or8Way(in=zrHigh, out=zr2);
+    Or(a=zr1, b=zr2, out=finalzr);
+    Not(in=finalzr, out=zr);
 }
