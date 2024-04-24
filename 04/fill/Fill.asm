@@ -8,4 +8,12 @@
 // i.e. writes "black" in every pixel. When no key is pressed, 
 // the screen should be cleared.
 
-//// Replace this comment with your code.
+(LOOP)
+    @keyboard
+    D = M
+
+    @CLEAR 
+    D;JEQ // jump if RAM[keyboard] == 0
+
+    @FILL
+    0;JMP // jump 
