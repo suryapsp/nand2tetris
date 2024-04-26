@@ -8,8 +8,11 @@
 // i.e. writes "black" in every pixel. When no key is pressed, 
 // the screen should be cleared.
 
+@start
+M = 0
+
 (LOOP)
-    @keyboard
+    @KBD
     D = M
 
     @CLEAR 
@@ -17,3 +20,39 @@
 
     @FILL
     0;JMP // jump 
+
+(CLEAR)
+    @start
+    D = M 
+    @LOOP
+    D;JLT
+    @start
+    D = M 
+    @SCREEN
+    A = A+D
+    M = 0
+    @start
+    M = M-1
+    @LOOP
+    0;JMP
+
+(FILL)
+    @start
+    D = M 
+    @8192 // Max 8192
+    D = D-A 
+    @LOOP 
+    D;JGE
+    @start
+    D = M 
+    @SCREEN 
+    A = A+D
+    M = -1
+    @start
+    M = M+1
+    @LOOP 
+    0;JMP 
+
+(END)
+    @END
+    0;JMP
