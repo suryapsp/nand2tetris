@@ -39,11 +39,32 @@ CHIP CPU {
     And(a=Cinstruction, b=instruction[5], out=ALUtoA);
     Mux16(a=instruction, b=ALUout, sel=ALUtoA, out=instMuxOUT);
 
-    Or(a=Ainstruction, b=ALUtoA, out=loadOF_A);
-    ARegister(in=instMuxOUT, load=loadOF_A, out=AregisterOUT);
+    Or(a=Ainstruction, b=ALUtoA, out=loadofa);
+    ARegister(in=instMuxOUT, load=loadofa, out=AregisterOUT);
     
+    Mux16(a=AregisterOUT, b=inM, sel=instruction[12], out=am);
+
+    And(a=instruction[15], b=instruction[4], out=inst1and);
     
+    DRegister(in=ALUout, load=inst1and, out=DregisterOUT);
     
+
+    ALU(x=DregisterOUT, y=am, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=ALUout, zr=zrOUT, ng=ngOUT);
+
+    Or16(a=false, b=AregisterOUT, out[0..14]=addressM);
+    Or16(a=false, b=ALUout, out=outM);
+    And(a=Cinstruction, b=instruction[3], out=writeM);
+
+    And(a=zrOUT, b=instruction[1], out=jeq);    
+    And(a=ngOUT, b=instruction[2], out=jlt);   
+    Or(a=zrOUT, b=ngOUT, out=zeroOrNeg);
+    Not(in=zeroOrNeg, out=positive);       
     
-    
+    And(a=positive, b=instruction[0], out=jgt); 
+    Or(a=jeq, b=jlt, out=jle);
+
+    Or(a=jle, b=jgt, out=jumpToA);             
+    And(a=Cinstruction, b=jumpToA, out=PCload); 
+    Not(in=PCload, out=PCinc);
+    PC(in=AregisterOUT, inc=PCinc, load=PCload, reset=reset, out[0..14]=pc);
 }
