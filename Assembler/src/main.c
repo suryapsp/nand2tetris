@@ -2,7 +2,13 @@
 #include <string.h>
 
 void parser(char *line, FILE *output){
-	
+	char *comments = strstr(line, "//");
+	if(comments != NULL){
+		*comments = '\0';
+	}
+	else{
+		return;
+	}
 }
 
 int main(int argc, char *argv[]){
@@ -23,12 +29,12 @@ int main(int argc, char *argv[]){
 	}
 	if(output == NULL){
 		printf("Output file %s can not be created/overwritten\n", argv[2]);
-		return 1;
+		// return 1;
 	}
 
-	char line[MAX_LINE_LENGTH];
-	while(fgets(line, MAX_LINE_LENGTH, input) != NULL){
-		parser(line, output)
+	char line[100];
+	while(fgets(line, 100, input) != NULL){
+		parser(line, output);
 	}
 	
 }
