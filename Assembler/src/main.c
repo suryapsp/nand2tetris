@@ -1,4 +1,9 @@
 #include <stdio.h>
+#include <string.h>
+
+void parser(char *line, FILE *output){
+	
+}
 
 int main(int argc, char *argv[]){
 	
@@ -20,6 +25,10 @@ int main(int argc, char *argv[]){
 		printf("Output file %s can not be created/overwritten\n", argv[2]);
 		return 1;
 	}
-	
+
+	char line[MAX_LINE_LENGTH];
+	while(fgets(line, MAX_LINE_LENGTH, input) != NULL){
+		parser(line, output)
+	}
 	
 }
