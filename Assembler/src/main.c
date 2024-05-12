@@ -1,14 +1,25 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 void parser(char *line, FILE *output){
 	char *comments = strstr(line, "//");
 	if(comments != NULL){
 		*comments = '\0';
 	}
-	else{
-		return;
-	}
+
+    // removing leading whitespace
+    while(*line == ' ' || *line == '\t'){
+        line++;        
+    }
+
+    //removing new lines and other space
+    char *end = line + strlen(line) - 1;
+    while((end > line) && (*end == ' ' || *end == '\t' || *end == '\n' || *end == '\r')){
+        end--;
+    }
+    *(end+1) = '\0';
+    
 }
 
 int main(int argc, char *argv[]){
@@ -34,7 +45,8 @@ int main(int argc, char *argv[]){
 
 	char line[100];
 	while(fgets(line, 100, input) != NULL){
-		parser(line, output);
+	    parser(line, output);
 	}
+
 	
 }
